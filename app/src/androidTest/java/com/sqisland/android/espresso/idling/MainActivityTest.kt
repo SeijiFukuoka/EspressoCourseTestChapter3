@@ -14,13 +14,21 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-  @Rule @JvmField
-  var activityRule = ActivityTestRule<MainActivity>(
-      MainActivity::class.java)
+    @Rule
+    @JvmField
+    var activityRule = ActivityTestRule<MainActivity>(
+            MainActivity::class.java)
 
-  @Test
-  fun done() {
-    onView(withId(R.id.text))
-        .check(matches(withText(R.string.done)))
-  }
+    @Test
+    fun done() {
+        val idlingResource = DialogFragmentIdlingResource(
+                activityRule.activity.supportFragmentManager,
+                LoadingDialogFragment.TAG)
+            IdlingRegistry.getInstance().register(idlingResource)
+
+        onView(withId(R.id.text))
+                .check(matches(withText(R.string.done)))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
 }
